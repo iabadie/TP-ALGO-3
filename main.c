@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 void showElement(void* pointer) {
-			double* p = pointer;
+			char* p = pointer;
 			printf("%f\n", *p);
 		}
 
