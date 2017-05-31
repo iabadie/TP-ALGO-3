@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 void showElement(void* pointer) {
-			char* p = pointer;
+			double* p = pointer;
 			printf("%f\n", *p);
 		}
 
@@ -157,6 +157,28 @@ int main(int argc, char** argv) {
 		collection_iterate(&collection2, &showElement);
 		printf("---------------\n");
 	}
+
+	{
+			//Test - collection_filter  -  Iterate the Collection list applying a local function at each element
+			printf("Test collection_filter :\n");
+			//data
+			double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
+			//declared function
+			void applyFunction(void* pointer) {
+				*(double*)pointer = 2 * *(double*)pointer;
+			}
+
+			//Collection test
+			Collection collection;
+			collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
+
+			//collection_iterate(&collection, &showElement);
+			collection_filter(&collection, &applyFunction);
+			//print results to show works fine
+			collection_iterate(&collection, &showElement);
+			printf("---------------\n");
+		}
+
 
 	//exit main
 	return 1;

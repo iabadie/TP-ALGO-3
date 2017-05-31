@@ -99,6 +99,17 @@ Collection* collection_collect(Collection* this, Collection* dst, void (*functio
 	return dst;
 }
 
+void collection_filter(Collection* this, void (*function)(void*)){
+	void* memPointer = (char*)malloc(this->size);
+	memcpy(memPointer, this->list, this->size);
+	collection_init(this, memPointer, this->size, this->typeSize);
+	collection_iterate(this, function);
+	this->list = memPointer;
+	free(memPointer);
+}
+
+
+
 
 
 
