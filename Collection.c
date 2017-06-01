@@ -6,6 +6,7 @@
 
 //ENTREGA 1
 
+
 Collection* collection_init(Collection* this, char* data, unsigned dataLength, unsigned typeSize) {
 	this->size = dataLength;
 	this->typeSize = typeSize;
@@ -29,6 +30,7 @@ Collection* collection_add(Collection* this, char* element) {
 	this->list = (char*) realloc(this->list, newSize);
 	char* pointer = this->list + this->size;
 	memcpy(pointer, element, this->typeSize);
+
 	this->size = newSize;
 	return this;
 }
@@ -41,6 +43,7 @@ Collection* collection_remove(Collection* this, char* element){
 		this->list = (char*)realloc(this->list, this->size - this->typeSize);
 		this->size -= this->typeSize;
 	}
+
 	return this;
 }
 
@@ -98,6 +101,36 @@ Collection* collection_collect(Collection* this, Collection* dst, void (*functio
 	free(memPointer);
 	return dst;
 }
+
+Collection* collection_reduce_left(Collection* this, void(*sumFunction)(void*,void*)){
+
+	unsigned count = this->size / this->typeSize;
+
+	void* previousPosition = (char*)malloc(this->size);
+
+	memcpy(previousPosition, this->list, this->size);
+
+	void* actualPosition = this->list + this->typeSize;
+
+	while(count--){
+		(*sumFunction)(previousPosition, actualPosition);
+		actualPosition += this->typeSize;
+	}
+
+	this->list = (char*)realloc(this->list, this->typeSize);
+	this->size = this->typeSize;
+	memcpy(this->list, previousPosition, this->size);
+	free(previousPosition);
+
+
+	return this;
+}
+
+
+
+
+
+
 
 
 
