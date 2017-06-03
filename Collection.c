@@ -6,8 +6,8 @@
 
 //ENTREGA 1
 
-Collection* collection_init(Collection* this, char* data, unsigned dataLength, unsigned typeSize) {
-	this->size = dataLength;
+Collection* collection_init(Collection* this, char* data, unsigned size, unsigned typeSize) {
+	this->size = size;
 	this->typeSize = typeSize;
 	this->list = (char*)malloc(this->size);
 	memcpy(this->list, data, this->size);
@@ -74,6 +74,29 @@ Collection* collection_select(Collection* this, Collection* dst, int (*filter)(v
 	return dst;
 }
 
+Collection* collection_collect(Collection* this, Collection* dst, void (*function)(void*)) {
+	void* memPointer = (char*)malloc(this->size);
+	memcpy(memPointer, this->list, this->size);
+	collection_init(dst, memPointer, this->size, this->typeSize);
+	collection_iterate(dst, function);
+	free(memPointer);
+	return dst;
+}
+
+// ENTREGA 3
+
+void collection_filter(Collection* this, void (*filterFunction)(void*)){
+	if(this->size != 0 && this->list){
+		Collection* dst;
+		collection_init_clean(dst, this->size, this->typeSize);
+		collection_clone(this, collection_select(this, dst, filterFunction));
+		collection_free(dst);
+	}
+
+}
+
+// Primitivas adicionales
+
 unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount, unsigned size, int (*filter)(void*)){
 	unsigned count = 0;
 	while(elementCount--) {
@@ -89,23 +112,16 @@ unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount
 	return count;
 }
 
-Collection* collection_collect(Collection* this, Collection* dst, void (*function)(void*)) {
-	void* memPointer = (char*)malloc(this->size);
-	memcpy(memPointer, this->list, this->size);
-	collection_init(dst, memPointer, this->size, this->typeSize);
-	collection_iterate(dst, function);
-	free(memPointer);
-	return dst;
+void collection_clone(Collection* this, Collection* dst){
+	this->list = dst->list;
 }
 
-void collection_filter(Collection* this, void (*filterFunction)(void*)){
-	if(this->size != 0 && this->list){
-		void* auxPointer = this->list;
-		this = collection_select(this, this, filterFunction);
-		free(auxPointer);
-	}
-
+void collection_init_clean(Collection* dst, unsigned size, unsigned typeSize){
+	dst->size = size;
+	dst->typeSize = typeSize;
+	dst->list = (void*)malloc(dst->size);
 }
+
 
 
 
