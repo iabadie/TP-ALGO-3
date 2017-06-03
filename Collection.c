@@ -114,6 +114,8 @@ unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount
 
 void collection_clone(Collection* this, Collection* dst){
 	this->list = dst->list;
+	this->size = dst->size;
+	this->typeSize = dst->typeSize;
 }
 
 void collection_init_clean(Collection* dst, unsigned size, unsigned typeSize){
