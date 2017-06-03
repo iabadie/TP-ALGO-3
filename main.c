@@ -6,6 +6,9 @@ void showElement(void* pointer) {
 			printf("%f\n", *p);
 		}
 
+void sumElements(void* previous, void* actual){
+			*(double*)previous = *(double*)previous + *(double*)actual;
+		}
 
 int main(int argc, char** argv) {
 	{
@@ -165,9 +168,7 @@ int main(int argc, char** argv) {
 		double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
 		//declared function
 
-		void sumElements(void* previous, void* actual){
-			*(double*)previous = *(double*)previous + *(double*)actual;
-		}
+
 		Collection collection;
 		collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
 		collection_reduce_right(&collection, &sumElements);
