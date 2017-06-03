@@ -139,7 +139,12 @@ Collection* collection_reduce_left(Collection* this, void(*function)(void*,void*
 		this->list = (char*)realloc(this->list, this->typeSize);
 		this->size = this->typeSize;
 		memcpy(this->list, bundle, this->size);
-		free(bundle);
+
+		// free(bundle);
+		// Al hacer el free del malloc pedido y asignado a bundle, el programa se rompe
+		// con el siguiente error y no se entiende el motivo. Dejo el codigo comentado.
+
+		//  console Error  *** free(): invalid next size (fast)  ***
 	}
 	return this;
 }
