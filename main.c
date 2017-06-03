@@ -158,6 +158,22 @@ int main(int argc, char** argv) {
 		printf("---------------\n");
 	}
 
+	{
+		// Test - reduce_right
+
+		printf("Test colection_reduce_right: \n");
+		double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
+		//declared function
+
+		void sumElements(void* previous, void* actual){
+			*(double*)previous = *(double*)previous + *(double*)actual;
+		}
+		Collection collection;
+		collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
+		collection_reduce_right(&collection, &sumElements);
+		collection_iterate(&collection, &showElement);
+	}
+
 	//exit main
 	return 1;
 }

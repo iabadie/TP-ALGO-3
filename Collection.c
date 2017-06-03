@@ -99,7 +99,29 @@ Collection* collection_collect(Collection* this, Collection* dst, void (*functio
 	return dst;
 }
 
+// ENTREGA 3
 
+Collection* collection_reduce_right(Collection* this, void(*function)(void*,void*)){
+	if(this->size < this->typeSize){
+		return 0;
+	}
+	if(this->size != this->typeSize){
+		unsigned count = (this->size / this->typeSize) - 1;
+		void* bundle = (char*)malloc(this->typeSize);
+		void* positionPointer = this->list + this->size - this->typeSize;
+		memcpy(bundle, positionPointer, this->size);
+		positionPointer -= this->typeSize;
+		while(count--){
+		(*function)(bundle, positionPointer);
+		positionPointer -= this->typeSize;
+		}
+		this->list = (char*)realloc(this->list, this->typeSize);
+		this->size = this->typeSize;
+		memcpy(this->list, bundle, this->typeSize);
+		free(bundle);
+	}
+	return this;
+}
 
 
 

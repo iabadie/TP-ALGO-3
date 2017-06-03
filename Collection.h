@@ -32,4 +32,9 @@ Collection* collection_collect(Collection* this, Collection* dst, void (*functio
 
 unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount, unsigned size, int (*filter)(void*));
 
+
+// ENTREGA 3
+
+Collection* collection_reduce_right(Collection* this, void(*function)(void*,void*));
+
 #endif
