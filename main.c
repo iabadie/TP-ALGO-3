@@ -173,7 +173,23 @@ int main(int argc, char** argv) {
 		collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
 		collection_reduce_right(&collection, &sumElements);
 		collection_iterate(&collection, &showElement);
+		printf("---------------\n");
 	}
+
+	{
+			// Test - reduce_left
+
+			printf("Test colection_reduce_left: \n");
+			double data[] = { 1.1, 2.2, 3.3, 4.4 };
+			//declared function
+
+
+			Collection collection;
+			collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
+			collection_reduce_left(&collection, &sumElements);
+			collection_iterate(&collection, &showElement);
+			printf("---------------\n");
+		}
 
 	//exit main
 	return 1;
