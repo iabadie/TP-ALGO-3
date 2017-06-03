@@ -100,8 +100,9 @@ Collection* collection_collect(Collection* this, Collection* dst, void (*functio
 
 void collection_filter(Collection* this, void (*filterFunction)(void*)){
 	if(this->size != 0 && this->list){
-		free(this->list);
+		void* auxPointer = this->list;
 		this = collection_select(this, this, filterFunction);
+		free(auxPointer);
 	}
 
 }
