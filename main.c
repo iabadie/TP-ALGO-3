@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
 	}
 
 	{
-		//Test - collection_select  -  Iterate the Collection and return a a filtered by a parameter criterian collection in a new Collection
+		//Test - collection_select  -  Iterate the Collection and return a filtered by a parameter criterian collection in a new Collection
 		printf("Test collection_select :\n");
 		// Declared function
 		int filter(void* pointer){
@@ -155,6 +155,30 @@ int main(int argc, char** argv) {
 		collection_collect(&collection, &collection2, &applyFunction);
 		//print results to show works fine
 		collection_iterate(&collection2, &showElement);
+		printf("---------------\n");
+	}
+
+	{
+		//Test - collection_filter  -  Iterate the Collection list applying a local function at each element
+		printf("Test collection_filter :\n");
+		//data
+		double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
+		//declared function
+		int filterFunction(void* pointer){
+			if(*(double*)pointer >= 3.0){
+					return 1;
+			}
+			return 0;
+		}
+
+		//Collection test
+		Collection collection;
+		collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
+
+		//collection_iterate(&collection, &showElement);
+		collection_filter(&collection, &filterFunction);
+		//print results to show works fine
+		collection_iterate(&collection, &showElement);
 		printf("---------------\n");
 	}
 

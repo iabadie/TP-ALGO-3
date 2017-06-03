@@ -71,7 +71,6 @@ Collection* collection_select(Collection* this, Collection* dst, int (*filter)(v
 	unsigned count = conditionalMemCpy(this->list, memPointer, elementCount, this->typeSize, filter);
 	collection_init(dst, memPointer, count*this->typeSize, this->typeSize);
 	free(memPointer);
-
 	return dst;
 }
 
@@ -98,6 +97,17 @@ Collection* collection_collect(Collection* this, Collection* dst, void (*functio
 	free(memPointer);
 	return dst;
 }
+
+void collection_filter(Collection* this, void (*filterFunction)(void*)){
+	if(this->size != 0 && this->list){
+		void* auxPointer = this->list;
+		this = collection_select(this, this, filterFunction);
+		free(auxPointer);
+	}
+
+}
+
+
 
 
 
