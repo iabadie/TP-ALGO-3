@@ -86,17 +86,19 @@ Collection* collection_collect(Collection* this, Collection* dst, void (*functio
 // ENTREGA 3
 
 void collection_filter(Collection* this, void (*filterFunction)(void*)){
-	if(this->size != 0 && this->list){
+	if(this->size == 0){
+		return;
+	}else{
 		Collection* dst;
 		collection_init_clean(dst, this->size, this->typeSize);
 		collection_clone(this, collection_select(this, dst, filterFunction));
 		collection_free(dst);
-	}
-
+		}
 }
 
 // Primitivas adicionales
 
+// Se encarga de copiar valor por valor, los que cumplan con la condiciòn de la funciòn filter.
 unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount, unsigned size, int (*filter)(void*)){
 	unsigned count = 0;
 	while(elementCount--) {
@@ -113,6 +115,7 @@ unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount
 }
 
 void collection_clone(Collection* this, Collection* dst){
+	free(this->list);
 	this->list = dst->list;
 	this->size = dst->size;
 	this->typeSize = dst->typeSize;
@@ -122,6 +125,7 @@ void collection_init_clean(Collection* dst, unsigned size, unsigned typeSize){
 	dst->size = size;
 	dst->typeSize = typeSize;
 	dst->list = (void*)malloc(dst->size);
+	memset(dst->list, 0, dst->size);
 }
 
 
