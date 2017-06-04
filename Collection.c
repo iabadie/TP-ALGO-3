@@ -88,12 +88,10 @@ Collection* collection_collect(Collection* this, Collection* dst, void (*functio
 void collection_filter(Collection* this, void (*filterFunction)(void*)){
 	if(this->size == 0){
 		return;
-	}else{
-		Collection* dst;
-		collection_init_clean(dst, this->size, this->typeSize);
-		collection_clone(this, collection_select(this, dst, filterFunction));
-		collection_free(dst);
-		}
+	Collection* dst;
+	collection_init_clean(dst, this->size, this->typeSize);
+	collection_clone(this, collection_select(this, dst, filterFunction));
+	collection_free(dst);
 }
 
 // Primitivas adicionales
