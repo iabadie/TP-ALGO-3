@@ -8,21 +8,25 @@ void showElement(void* pointer) {
 			printf("%f\n", *p);
 		}
 
+void sumElements(void* previous, void* actual){
+			*(double*)previous = *(double*)previous + *(double*)actual;
+}
+
 int filterFunction(void* pointer){
-			if(*(double*)pointer >= 3.0){
-					return 1;
-			}
-			return 0;
-		}
+	if(*(double*)pointer >= 3.0){
+			return 1;
+	}
+	return 0;
+}
 
 void duplicate(void* pointer) {
-			double* p = pointer;
-			*p = *p * 2;
-		}
+	double* p = pointer;
+	*p = *p * 2;
+}
 
 void applyFunction(void* pointer) {
-			*(double*)pointer = 2 * *(double*)pointer;
-		}
+	*(double*)pointer = 2 * *(double*)pointer;
+}
 
 int main(int argc, char** argv) {
 	{
@@ -162,13 +166,13 @@ int main(int argc, char** argv) {
 		printf("---------------\n");
 	}
 
+	// ENTREGA 3
+
 	{
 		//Test - collection_filter  -  Iterate the Collection list applying a local function at each element
 		printf("Test collection_filter :\n");
 		//data
 		double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
-		//declared function
-
 
 		//Collection test
 		Collection collection;
@@ -177,6 +181,34 @@ int main(int argc, char** argv) {
 		//collection_iterate(&collection, &showElement);
 		collection_filter(&collection, &filterFunction);
 		//print results to show works fine
+		collection_iterate(&collection, &showElement);
+		printf("---------------\n");
+	}
+
+	{
+		// Test - reduce_right
+
+		printf("Test colection_reduce_right: \n");
+		double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
+
+		Collection collection;
+		collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
+		collection_reduce_right(&collection, &sumElements);
+		collection_iterate(&collection, &showElement);
+		printf("---------------\n");
+	}
+
+	{
+		// Test - reduce_left
+
+		printf("Test colection_reduce_left: \n");
+		double data[] = { 1.1, 2.2, 3.3, 4.4 };
+		//declared function
+
+
+		Collection collection;
+		collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
+		collection_reduce_left(&collection, &sumElements);
 		collection_iterate(&collection, &showElement);
 		printf("---------------\n");
 	}
