@@ -166,6 +166,8 @@ int main(int argc, char** argv) {
 		printf("---------------\n");
 	}
 
+	// ENTREGA 3
+
 	{
 		//Test - collection_filter  -  Iterate the Collection list applying a local function at each element
 		printf("Test collection_filter :\n");
@@ -195,6 +197,7 @@ int main(int argc, char** argv) {
 		collection_iterate(&collection, &showElement);
 		printf("---------------\n");
 	}
+
 	{
 		// Test - reduce_left
 
@@ -209,7 +212,6 @@ int main(int argc, char** argv) {
 		collection_iterate(&collection, &showElement);
 		printf("---------------\n");
 	}
-
 
 	//exit main
 	return 1;

@@ -37,7 +37,7 @@ unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount
 
 // ENTREGA 3
 
-void collection_filter(Collection* this, void (*function)(void*));
+void collection_filter(Collection* this, int (*function)(void*));
 
 Collection* collection_reduce_right(Collection* this, void(*function)(void*,void*));
 

@@ -47,7 +47,7 @@ Collection* collection_remove(Collection* this, char* element){
 void collection_free(Collection* this){
 	if(this->list) {
 		free(this->list);
-		this->list = 0;
+		this->list = NULL;
 	}
 }
 
@@ -71,6 +71,7 @@ Collection* collection_select(Collection* this, Collection* dst, int (*filter)(v
 	unsigned count = conditionalMemCpy(this->list, memPointer, elementCount, this->typeSize, filter);
 	collection_init(dst, memPointer, count*this->typeSize, this->typeSize);
 	free(memPointer);
+	memPointer = NULL;
 	return dst;
 }
 
@@ -80,19 +81,20 @@ Collection* collection_collect(Collection* this, Collection* dst, void (*functio
 	collection_init(dst, memPointer, this->size, this->typeSize);
 	collection_iterate(dst, function);
 	free(memPointer);
+	memPointer = NULL;
 	return dst;
 }
 
 // ENTREGA 3
 
-void collection_filter(Collection* this, void (*filterFunction)(void*)){
+void collection_filter(Collection* this, int (*filterFunction)(void*)){
 	if(this->size == 0){
 		return;
+	}
 	Collection* dst;
 	collection_init_clean(dst, this->size, this->typeSize);
 	collection_clone(this, collection_select(this, dst, filterFunction));
 	collection_free(dst);
-	}
 }
 
 
@@ -114,6 +116,7 @@ Collection* collection_reduce_right(Collection* this, void(*function)(void*,void
 		this->size = this->typeSize;
 		memcpy(this->list, bundle, this->typeSize);
 		free(bundle);
+		bundle = NULL;
 	}
 	return this;
 }
