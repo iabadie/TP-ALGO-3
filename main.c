@@ -1,6 +1,8 @@
 #include "Collection.h"
 #include <stdio.h>
 
+//Functions
+
 void showElement(void* pointer) {
 			double* p = pointer;
 			printf("%f\n", *p);
@@ -8,7 +10,23 @@ void showElement(void* pointer) {
 
 void sumElements(void* previous, void* actual){
 			*(double*)previous = *(double*)previous + *(double*)actual;
-		}
+}
+
+int filterFunction(void* pointer){
+	if(*(double*)pointer >= 3.0){
+			return 1;
+	}
+	return 0;
+}
+
+void duplicate(void* pointer) {
+	double* p = pointer;
+	*p = *p * 2;
+}
+
+void applyFunction(void* pointer) {
+	*(double*)pointer = 2 * *(double*)pointer;
+}
 
 int main(int argc, char** argv) {
 	{
@@ -81,10 +99,7 @@ int main(int argc, char** argv) {
 		double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
 
 		//functions
-		void duplicate(void* pointer) {
-			double* p = pointer;
-			*p = *p * 2;
-		}
+
 
 		//Collection test
 		Collection collection;
@@ -116,15 +131,9 @@ int main(int argc, char** argv) {
 	}
 
 	{
-		//Test - collection_select  -  Iterate the Collection and return a a filtered by a parameter criterian collection in a new Collection
+		//Test - collection_select  -  Iterate the Collection and return a filtered by a parameter criterian collection in a new Collection
 		printf("Test collection_select :\n");
-		// Declared function
-		int filter(void* pointer){
-			if(*(double*)pointer >= 3.0){
-				return 1;
-			}
-			return 0;
-		}
+
 		//data
 		double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
 
@@ -134,7 +143,7 @@ int main(int argc, char** argv) {
 		collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
 
 		Collection collection2;
-		collection_select(&collection, &collection2, &filter);
+		collection_select(&collection, &collection2, &filterFunction);
 		//print results to show works fine
 		collection_iterate(&collection2, &showElement);
 		printf("---------------\n");
@@ -145,10 +154,6 @@ int main(int argc, char** argv) {
 		printf("Test collection_collect :\n");
 		//data
 		double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
-		//declared function
-		void applyFunction(void* pointer) {
-			*(double*)pointer = 2 * *(double*)pointer;
-		}
 
 		//Collection test
 		Collection collection;
@@ -162,12 +167,27 @@ int main(int argc, char** argv) {
 	}
 
 	{
+		//Test - collection_filter  -  Iterate the Collection list applying a local function at each element
+		printf("Test collection_filter :\n");
+		//data
+		double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
+
+		//Collection test
+		Collection collection;
+		collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
+
+		//collection_iterate(&collection, &showElement);
+		collection_filter(&collection, &filterFunction);
+		//print results to show works fine
+		collection_iterate(&collection, &showElement);
+		printf("---------------\n");
+	}
+
+	{
 		// Test - reduce_right
 
 		printf("Test colection_reduce_right: \n");
 		double data[] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
-		//declared function
-
 
 		Collection collection;
 		collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
@@ -175,21 +195,21 @@ int main(int argc, char** argv) {
 		collection_iterate(&collection, &showElement);
 		printf("---------------\n");
 	}
-
 	{
-			// Test - reduce_left
+		// Test - reduce_left
 
-			printf("Test colection_reduce_left: \n");
-			double data[] = { 1.1, 2.2, 3.3, 4.4 };
-			//declared function
+		printf("Test colection_reduce_left: \n");
+		double data[] = { 1.1, 2.2, 3.3, 4.4 };
+		//declared function
 
 
-			Collection collection;
-			collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
-			collection_reduce_left(&collection, &sumElements);
-			collection_iterate(&collection, &showElement);
-			printf("---------------\n");
-		}
+		Collection collection;
+		collection_init(&collection, (char*)data, sizeof(data), sizeof(double));
+		collection_reduce_left(&collection, &sumElements);
+		collection_iterate(&collection, &showElement);
+		printf("---------------\n");
+	}
+
 
 	//exit main
 	return 1;

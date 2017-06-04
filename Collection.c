@@ -6,8 +6,8 @@
 
 //ENTREGA 1
 
-Collection* collection_init(Collection* this, char* data, unsigned dataLength, unsigned typeSize) {
-	this->size = dataLength;
+Collection* collection_init(Collection* this, char* data, unsigned size, unsigned typeSize) {
+	this->size = size;
 	this->typeSize = typeSize;
 	this->list = (char*)malloc(this->size);
 	memcpy(this->list, data, this->size);
@@ -71,23 +71,7 @@ Collection* collection_select(Collection* this, Collection* dst, int (*filter)(v
 	unsigned count = conditionalMemCpy(this->list, memPointer, elementCount, this->typeSize, filter);
 	collection_init(dst, memPointer, count*this->typeSize, this->typeSize);
 	free(memPointer);
-
 	return dst;
-}
-
-unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount, unsigned size, int (*filter)(void*)){
-	unsigned count = 0;
-	while(elementCount--) {
-		if((*filter)(pointer1) == 1){
-			memcpy(pointer2, pointer1, size);
-			pointer1+= size;
-			pointer2+= size;
-			count++;
-		}else {
-			pointer1+= size;
-		}
-	}
-	return count;
 }
 
 Collection* collection_collect(Collection* this, Collection* dst, void (*function)(void*)) {
@@ -100,6 +84,17 @@ Collection* collection_collect(Collection* this, Collection* dst, void (*functio
 }
 
 // ENTREGA 3
+
+void collection_filter(Collection* this, void (*filterFunction)(void*)){
+	if(this->size == 0){
+		return;
+	Collection* dst;
+	collection_init_clean(dst, this->size, this->typeSize);
+	collection_clone(this, collection_select(this, dst, filterFunction));
+	collection_free(dst);
+	}
+}
+
 
 Collection* collection_reduce_right(Collection* this, void(*function)(void*,void*)){
 	if(this->size < this->typeSize){
@@ -148,6 +143,43 @@ Collection* collection_reduce_left(Collection* this, void(*function)(void*,void*
 	}
 	return this;
 }
+
+
+
+// Primitivas adicionales
+
+// Se encarga de copiar valor por valor, los que cumplan con la condiciòn de la funciòn filter.
+unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount, unsigned size, int (*filter)(void*)){
+	unsigned count = 0;
+	while(elementCount--) {
+		if((*filter)(pointer1) == 1){
+			memcpy(pointer2, pointer1, size);
+			pointer1+= size;
+			pointer2+= size;
+			count++;
+		}else {
+			pointer1+= size;
+		}
+	}
+	return count;
+}
+
+void collection_clone(Collection* this, Collection* dst){
+	free(this->list);
+	this->list = dst->list;
+	this->size = dst->size;
+	this->typeSize = dst->typeSize;
+}
+
+void collection_init_clean(Collection* dst, unsigned size, unsigned typeSize){
+	dst->size = size;
+	dst->typeSize = typeSize;
+	dst->list = (void*)malloc(dst->size);
+	memset(dst->list, 0, dst->size);
+}
+
+
+
 
 
 
