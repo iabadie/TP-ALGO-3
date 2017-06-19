@@ -69,6 +69,7 @@ Collection* collection_select(Collection* this, Collection* dst, int (*filter)(v
 	unsigned elementCount = this->size / this->typeSize;
 	char* memPointer = (char*)malloc(this->size);
 	unsigned count = conditionalMemCpy(this->list, memPointer, elementCount, this->typeSize, filter);
+	collection_free(dst);
 	collection_init(dst, memPointer, count*this->typeSize, this->typeSize);
 	free(memPointer);
 	memPointer = NULL;
@@ -94,7 +95,6 @@ void collection_filter(Collection* this, int (*filterFunction)(void*)){
 	Collection* dst;
 	collection_init_clean(dst, this->size, this->typeSize);
 	collection_clone(this, collection_select(this, dst, filterFunction));
-	collection_free(dst);
 }
 
 
@@ -164,9 +164,9 @@ void collection_intersection(Collection* this, Collection* secondary) {
 		primaryPointer += this->typeSize;
 	}
 	if(newFinalSize != 0) {
-	newMem = realloc(newMem, newFinalSize * secondary->typeSize);
+	newMem = realloc(newMem, newFinalSize * this->typeSize);
 	free(this->list);
-	this->list = newMem;
+	collection_update(this, newMem, newFinalSize * this->typeSize, this->typeSize);
 	return;
 	}
 	free(newMem);
@@ -205,7 +205,11 @@ void collection_init_clean(Collection* dst, unsigned size, unsigned typeSize){
 	memset(dst->list, 0, dst->size);
 }
 
-
+void collection_update(Collection* this, char* newPointer, unsigned newSize, unsigned newTypeSize) {
+	this->size = newSize;
+	this->typeSize = newTypeSize;
+	this->list = newPointer;
+}
 
 
 

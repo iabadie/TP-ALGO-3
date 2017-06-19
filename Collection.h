@@ -54,4 +54,6 @@ void collection_init_clean(Collection* dst, unsigned size, unsigned typeSize);
 
 void collection_clone(Collection* this, Collection* dst);
 
+void collection_update(Collection* this, char* newPointer, unsigned newSize, unsigned newTypeSize);
+
 #endif
