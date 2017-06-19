@@ -44,6 +44,10 @@ Collection* collection_reduce_right(Collection* this, void(*function)(void*,void
 Collection* collection_reduce_left(Collection* this, void (*function) (void*,void*));
 
 
+//ENTREGA 4
+
+void collection_intersection(Collection* this, Collection* secondary);
+
 // Primitivas adicionales
 
 void collection_init_clean(Collection* dst, unsigned size, unsigned typeSize);

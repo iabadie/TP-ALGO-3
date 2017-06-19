@@ -147,6 +147,30 @@ Collection* collection_reduce_left(Collection* this, void(*function)(void*,void*
 	return this;
 }
 
+// ENTREGA 4
+
+void collection_intersection(Collection* this, Collection* secondary) {
+	unsigned elementsCount = this->size / this->typeSize;
+	void* newMem = malloc(this->size);
+	void* newMemTravellPointer = newMem;
+	unsigned newFinalSize = 0;
+	void* primaryPointer = this->list;
+	while(elementsCount--) {
+		if(collection_find(secondary, primaryPointer) != 0) {
+			memcpy(newMemTravellPointer, primaryPointer, this->typeSize);
+			newMemTravellPointer += this->typeSize;
+			newFinalSize += 1;
+		}
+		primaryPointer += this->typeSize;
+	}
+	if(newFinalSize != 0) {
+	newMem = realloc(newMem, newFinalSize * secondary->typeSize);
+	free(this->list);
+	this->list = newMem;
+	return;
+	}
+	free(newMem);
+}
 
 
 // Primitivas adicionales
