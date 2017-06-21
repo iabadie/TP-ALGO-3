@@ -92,9 +92,10 @@ void collection_filter(Collection* this, int (*filterFunction)(void*)){
 	if(this->size == 0){
 		return;
 	}
-	Collection* dst;
-	collection_init_clean(dst, this->size, this->typeSize);
-	collection_clone(this, collection_select(this, dst, filterFunction));
+	Collection dst;
+	collection_init_clean(&dst, this->size, this->typeSize);
+	collection_clone(this, collection_select(this, &dst, filterFunction));
+	collection_free(&dst);
 }
 
 

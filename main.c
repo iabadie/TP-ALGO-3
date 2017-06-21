@@ -167,7 +167,7 @@ int main(int argc, char** argv) {
 	}
 
 	// ENTREGA 3
-/*
+
 	{
 		//Test - collection_filter  -  Iterate the Collection list applying a local function at each element
 		printf("Test collection_filter :\n");
@@ -184,7 +184,7 @@ int main(int argc, char** argv) {
 		collection_iterate(&collection, &showElement);
 		printf("---------------\n");
 	}
-*/
+/*
 	{
 		// Test - colection_intersection
 
@@ -232,7 +232,7 @@ int main(int argc, char** argv) {
 		printf("---------------\n");
 	}
 
-
-	return 1;
+*/
+	return 0;
 }
 
