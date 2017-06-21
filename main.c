@@ -203,7 +203,7 @@ int main(int argc, char** argv) {
 		collection_iterate(&collection1, &showElement);
 		printf("---------------\n");
 	}
-
+*/
 	{
 		// Test - reduce_right
 
@@ -232,7 +232,6 @@ int main(int argc, char** argv) {
 		printf("---------------\n");
 	}
 
-*/
 	return 0;
 }
 

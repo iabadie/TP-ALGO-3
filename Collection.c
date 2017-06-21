@@ -107,7 +107,7 @@ Collection* collection_reduce_right(Collection* this, void(*function)(void*,void
 		unsigned count = (this->size / this->typeSize) - 1;
 		void* bundle = (void*)malloc(this->typeSize);
 		void* positionPointer = this->list + this->size - this->typeSize;
-		memcpy(bundle, positionPointer, this->size);
+		memcpy(bundle, positionPointer, this->typeSize);
 		positionPointer -= this->typeSize;
 		while(count--){
 		(*function)(bundle, positionPointer);
@@ -123,13 +123,13 @@ Collection* collection_reduce_right(Collection* this, void(*function)(void*,void
 }
 
 Collection* collection_reduce_left(Collection* this, void(*function)(void*,void*)){
-	if(this->size < this->typeSize){
+	if(this->size <= this->typeSize){
 			return 0;
-		}
+	}
 	if(this->size != this->typeSize){
 		unsigned count = (this->size / this->typeSize) - 1;
 		void* bundle = (void*)malloc(this->typeSize);
-		memcpy(bundle, this->list, this->size);
+		memcpy(bundle, this->list, this->typeSize);
 		void* actualPosition = this->list + this->typeSize;
 		while(count--){
 			(*function)(bundle, actualPosition);
@@ -137,13 +137,10 @@ Collection* collection_reduce_left(Collection* this, void(*function)(void*,void*
 		}
 		this->list = (char*)realloc(this->list, this->typeSize);
 		this->size = this->typeSize;
-		memcpy(this->list, bundle, this->size);
+		memcpy(this->list, bundle, this->typeSize);
 
-		// free(bundle);
-		// Al hacer el free del malloc pedido y asignado a bundle, el programa se rompe
-		// con el siguiente error y no se entiende el motivo. Dejo el codigo comentado.
-
-		//  console Error  *** free(): invalid next size (fast)  ***
+		free(bundle);
+		bundle = NULL;
 	}
 	return this;
 }
