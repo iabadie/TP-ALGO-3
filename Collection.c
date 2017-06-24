@@ -172,14 +172,9 @@ void collection_intersection(Collection* this, Collection* secondary) {
 void collection_join(Collection* this, Collection* secondary){
 
 	unsigned sizeJoin = this->size + secondary->size ;
-	void* newMem = malloc(sizeJoin);
-	void* newMemTravellPointer = newMem;
-
-	memcpy(newMemTravellPointer, this->list, this->size);
-	newMemTravellPointer += this->size;
-	memcpy(newMemTravellPointer, secondary->list, secondary->size);
-
-	collection_update(this, newMem, sizeJoin, this->typeSize);
+	this->list = realloc(this->list, sizeJoin);
+	memcpy(this->list + this->size, secondary->list, secondary->size);
+	this->size = sizeJoin;
 
 	return;
 }
