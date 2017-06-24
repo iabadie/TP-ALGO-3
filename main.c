@@ -213,7 +213,44 @@ int main(int argc, char** argv) {
 		printf("---------------\n");
 	}
 
-	//exit main
-	return 1;
+	{
+		// Test - colection_intersection
+
+		printf("Test colection_intersection: \n");
+		double data1[] = { 1.1, 2.2, 3.3, 4.4 };
+		double data2[] = { 5.3, 1.1, 3.3, 4.5 };
+		//declared function
+
+		//declared collection1
+		Collection collection1;
+		collection_init(&collection1, (char*)data1, sizeof(data1), sizeof(double));
+		//declared collection 2
+		Collection collection2;
+		collection_init(&collection2, (char*)data2, sizeof(data2), sizeof(double));
+		collection_intersection(&collection1, &collection2);
+		collection_iterate(&collection1, &showElement);
+		printf("---------------\n");
+	}
+
+	{
+		//Test - Join
+
+		printf("Test colection_join: \n");
+
+		double data1[] = { 1.1, 2.2, 3.3, 4.4 };
+		double data2[] = { 5.5, 6.6, 7.7, 8.8 };
+
+		Collection collection;
+		collection_init(&collection, (char*)data1, sizeof(data1), sizeof(double));
+
+		Collection collection2;
+		collection_init(&collection2, (char*)data2, sizeof(data2), sizeof(double));
+
+		collection_join(&collection, &collection2);
+
+		collection_iterate(&collection, &showElement);
+	}
+
+	return 0;
 }
 

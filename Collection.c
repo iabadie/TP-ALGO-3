@@ -69,6 +69,7 @@ Collection* collection_select(Collection* this, Collection* dst, int (*filter)(v
 	unsigned elementCount = this->size / this->typeSize;
 	char* memPointer = (char*)malloc(this->size);
 	unsigned count = conditionalMemCpy(this->list, memPointer, elementCount, this->typeSize, filter);
+	collection_free(dst);
 	collection_init(dst, memPointer, count*this->typeSize, this->typeSize);
 	free(memPointer);
 	memPointer = NULL;
@@ -91,10 +92,10 @@ void collection_filter(Collection* this, int (*filterFunction)(void*)){
 	if(this->size == 0){
 		return;
 	}
-	Collection* dst;
-	collection_init_clean(dst, this->size, this->typeSize);
-	collection_clone(this, collection_select(this, dst, filterFunction));
-	collection_free(dst);
+	Collection dst;
+	collection_init_clean(&dst, this->size, this->typeSize);
+	collection_clone(this, collection_select(this, &dst, filterFunction));
+	collection_free(&dst);
 }
 
 
@@ -106,7 +107,7 @@ Collection* collection_reduce_right(Collection* this, void(*function)(void*,void
 		unsigned count = (this->size / this->typeSize) - 1;
 		void* bundle = (void*)malloc(this->typeSize);
 		void* positionPointer = this->list + this->size - this->typeSize;
-		memcpy(bundle, positionPointer, this->size);
+		memcpy(bundle, positionPointer, this->typeSize);
 		positionPointer -= this->typeSize;
 		while(count--){
 		(*function)(bundle, positionPointer);
@@ -122,13 +123,13 @@ Collection* collection_reduce_right(Collection* this, void(*function)(void*,void
 }
 
 Collection* collection_reduce_left(Collection* this, void(*function)(void*,void*)){
-	if(this->size < this->typeSize){
+	if(this->size <= this->typeSize){
 			return 0;
-		}
+	}
 	if(this->size != this->typeSize){
 		unsigned count = (this->size / this->typeSize) - 1;
 		void* bundle = (void*)malloc(this->typeSize);
-		memcpy(bundle, this->list, this->size);
+		memcpy(bundle, this->list, this->typeSize);
 		void* actualPosition = this->list + this->typeSize;
 		while(count--){
 			(*function)(bundle, actualPosition);
@@ -136,17 +137,52 @@ Collection* collection_reduce_left(Collection* this, void(*function)(void*,void*
 		}
 		this->list = (char*)realloc(this->list, this->typeSize);
 		this->size = this->typeSize;
-		memcpy(this->list, bundle, this->size);
+		memcpy(this->list, bundle, this->typeSize);
 
-		// free(bundle);
-		// Al hacer el free del malloc pedido y asignado a bundle, el programa se rompe
-		// con el siguiente error y no se entiende el motivo. Dejo el codigo comentado.
-
-		//  console Error  *** free(): invalid next size (fast)  ***
+		free(bundle);
+		bundle = NULL;
 	}
 	return this;
 }
 
+// ENTREGA 4
+
+void collection_intersection(Collection* this, Collection* secondary) {
+	unsigned elementsCount = this->size / this->typeSize;
+	void* newMem = malloc(this->size);
+	void* newMemTravellPointer = newMem;
+	unsigned newFinalSize = 0;
+	void* primaryPointer = this->list;
+	while(elementsCount--) {
+		if(collection_find(secondary, primaryPointer) != 0) {
+			memcpy(newMemTravellPointer, primaryPointer, this->typeSize);
+			newMemTravellPointer += this->typeSize;
+			newFinalSize += 1;
+		}
+		primaryPointer += this->typeSize;
+	}
+	if(newFinalSize != 0) {
+	newMem = realloc(newMem, newFinalSize * this->typeSize);
+	collection_update(this, newMem, newFinalSize * this->typeSize, this->typeSize);
+	return;
+	}
+	free(newMem);
+}
+
+void collection_join(Collection* this, Collection* secondary){
+
+	unsigned sizeJoin = this->size + secondary->size ;
+	void* newMem = malloc(sizeJoin);
+	void* newMemTravellPointer = newMem;
+
+	memcpy(newMemTravellPointer, this->list, this->size);
+	newMemTravellPointer += this->size;
+	memcpy(newMemTravellPointer, secondary->list, secondary->size);
+
+	collection_update(this, newMem, sizeJoin, this->typeSize);
+
+	return;
+}
 
 
 // Primitivas adicionales
@@ -181,7 +217,12 @@ void collection_init_clean(Collection* dst, unsigned size, unsigned typeSize){
 	memset(dst->list, 0, dst->size);
 }
 
-
+void collection_update(Collection* this, void* newPointer, unsigned newSize, unsigned newTypeSize) {
+	free(this->list);
+	this->size = newSize;
+	this->typeSize = newTypeSize;
+	this->list = newPointer;
+}
 
 
 
