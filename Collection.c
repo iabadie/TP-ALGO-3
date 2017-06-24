@@ -126,7 +126,46 @@ Collection* collection_reduce_left(Collection* this, void(*sumFunction)(void*,vo
 	return this;
 }
 
+// Entrega 4
 
+void collection_join(Collection* this, Collection* secondary){
+
+	unsigned sizeJoin = this->size + secondary->size ;
+
+	int count_this = this->size / this->typeSize;
+	int count_secondary = secondary->size / secondary->typeSize;
+
+	void* newMem = malloc(this->size + secondary->size);
+	void* newMemTravellPointer = newMem;
+	void* primaryPointer = this->list;
+	void* secondaryPointer = secondary->list;
+
+
+	while(count_this--){
+		memcpy(newMemTravellPointer, primaryPointer, this->typeSize);
+		newMemTravellPointer += this->typeSize;
+		primaryPointer += this->typeSize;
+	}
+
+	while(count_secondary--){
+		memcpy(newMemTravellPointer, secondaryPointer, this->typeSize);
+		newMemTravellPointer += secondary->typeSize;
+		secondaryPointer += secondary->typeSize;
+	}
+
+	free(this->list);
+
+	collection_update(this, newMem, sizeJoin, this->typeSize);
+	free(newMem);
+
+	return;
+}
+
+void collection_update(Collection* this, char* newPointer, unsigned newSize, unsigned newTypeSize) {
+	this->size = newSize;
+	this->typeSize = newTypeSize;
+	this->list = newPointer;
+}
 
 
 
