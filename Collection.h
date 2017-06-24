@@ -30,11 +30,6 @@ Collection* collection_select(Collection* this, Collection* dst, int (*filter)(v
 
 Collection* collection_collect(Collection* this, Collection* dst, void (*function)(void*));
 
-// Primitiva adicional
-
-unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount, unsigned size, int (*filter)(void*));
-
-
 // ENTREGA 3
 
 void collection_filter(Collection* this, int (*function)(void*));
@@ -48,12 +43,16 @@ Collection* collection_reduce_left(Collection* this, void (*function) (void*,voi
 
 void collection_intersection(Collection* this, Collection* secondary);
 
+void collection_join(Collection* this, Collection* secondary);
+
 // Primitivas adicionales
+
+unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount, unsigned size, int (*filter)(void*));
 
 void collection_init_clean(Collection* dst, unsigned size, unsigned typeSize);
 
 void collection_clone(Collection* this, Collection* dst);
 
-void collection_update(Collection* this, char* newPointer, unsigned newSize, unsigned newTypeSize);
+void collection_update(Collection* this, void* newPointer, unsigned newSize, unsigned newTypeSize);
 
 #endif

@@ -163,11 +163,25 @@ void collection_intersection(Collection* this, Collection* secondary) {
 	}
 	if(newFinalSize != 0) {
 	newMem = realloc(newMem, newFinalSize * this->typeSize);
-	free(this->list);
 	collection_update(this, newMem, newFinalSize * this->typeSize, this->typeSize);
 	return;
 	}
 	free(newMem);
+}
+
+void collection_join(Collection* this, Collection* secondary){
+
+	unsigned sizeJoin = this->size + secondary->size ;
+	void* newMem = malloc(sizeJoin);
+	void* newMemTravellPointer = newMem;
+
+	memcpy(newMemTravellPointer, this->list, this->size);
+	newMemTravellPointer += this->size;
+	memcpy(newMemTravellPointer, secondary->list, secondary->size);
+
+	collection_update(this, newMem, sizeJoin, this->typeSize);
+
+	return;
 }
 
 
@@ -203,7 +217,8 @@ void collection_init_clean(Collection* dst, unsigned size, unsigned typeSize){
 	memset(dst->list, 0, dst->size);
 }
 
-void collection_update(Collection* this, char* newPointer, unsigned newSize, unsigned newTypeSize) {
+void collection_update(Collection* this, void* newPointer, unsigned newSize, unsigned newTypeSize) {
+	free(this->list);
 	this->size = newSize;
 	this->typeSize = newTypeSize;
 	this->list = newPointer;
