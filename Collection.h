@@ -36,4 +36,8 @@ unsigned conditionalMemCpy(void* pointer1, void* pointer2, unsigned elementCount
 
 Collection* collection_reduce_left(Collection* this, void (*sumFunction) (void*,void*));
 
+//ENTREGA 4
+
+void collection_join(Collection* this, Collection* secondary);
+
 #endif
